@@ -2,15 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import apiClient from "@/lib/api-client"
-import type { UrlFormData } from "@/lib/types"
+import type { ApiResponse, ShortLink, UrlFormData, LinkStats } from "@/lib/types"
 
 // Fetch all links for the current user
 export function useLinks(page = 1, limit = 10) {
   return useQuery({
     queryKey: ["links", page, limit],
     queryFn: async () => {
-      // Using mock API client
-      return await apiClient.getLinks(page, limit)
+      const response = await apiClient.get<ApiResponse<{ links: ShortLink[]; total: number }>>(
+        `/links?page=${page}&limit=${limit}`,
+      )
+      return response.data.data
     },
   })
 }
@@ -21,8 +23,8 @@ export function useCreateLink() {
 
   return useMutation({
     mutationFn: async (data: UrlFormData) => {
-      // Using mock API client
-      return await apiClient.createLink(data)
+      const response = await apiClient.post<ApiResponse<ShortLink>>("/links", data)
+      return response.data.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["links"] })
@@ -36,8 +38,8 @@ export function useUpdateLink() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<UrlFormData> }) => {
-      // Using mock API client
-      return await apiClient.updateLink(id, data)
+      const response = await apiClient.put<ApiResponse<ShortLink>>(`/links/${id}`, data)
+      return response.data.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["links"] })
@@ -51,8 +53,8 @@ export function useDeleteLink() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      // Using mock API client
-      return await apiClient.deleteLink(id)
+      const response = await apiClient.delete<ApiResponse<void>>(`/links/${id}`)
+      return response.data.success
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["links"] })
@@ -65,8 +67,8 @@ export function useLinkStats(id: string) {
   return useQuery({
     queryKey: ["linkStats", id],
     queryFn: async () => {
-      // Using mock API client
-      return await apiClient.getLinkStats(id)
+      const response = await apiClient.get<ApiResponse<LinkStats>>(`/links/${id}/stats`)
+      return response.data.data
     },
     enabled: !!id,
   })
@@ -77,15 +79,8 @@ export function useDomains() {
   return useQuery({
     queryKey: ["domains"],
     queryFn: async () => {
-      // Using mock API client
-      return await apiClient.getDomains()
+      const response = await apiClient.get<ApiResponse<string[]>>("/domains")
+      return response.data.data || []
     },
   })
 }
-
-/*
- * IMPORTANT: When connecting to your real backend:
- * 1. Replace the mock API calls with real API calls using axios
- * 2. Update the error handling and response parsing
- * 3. Adjust the query and mutation options as needed
- */

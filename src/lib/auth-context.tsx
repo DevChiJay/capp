@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import type { User, LoginCredentials, SignupCredentials } from "./types"
+import type { User, LoginCredentials, SignupCredentials, ApiResponse, AuthTokens } from "./types"
 import apiClient from "./api-client"
 import { setAuthTokens, getAuthTokens, clearAuthTokens } from "./auth"
 
@@ -27,9 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const tokens = getAuthTokens()
       if (tokens?.accessToken) {
         try {
-          // Fetch user profile using mock API
-          const userData = await apiClient.getUser()
-          setUser(userData)
+          // Fetch user profile
+          const response = await apiClient.get<ApiResponse<User>>("/auth/me")
+          if (response.data.success && response.data.data) {
+            setUser(response.data.data)
+          } else {
+            clearAuthTokens()
+          }
         } catch (error) {
           console.error("Failed to fetch user profile:", error)
           clearAuthTokens()
@@ -44,18 +48,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
       setIsLoading(true)
+      const response = await apiClient.post<ApiResponse<AuthTokens>>("/auth/login", credentials)
 
-      // Call mock login API
-      const tokens = await apiClient.login(credentials)
+      if (response.data.success && response.data.data) {
+        setAuthTokens(response.data.data)
 
-      // Store tokens
-      setAuthTokens(tokens)
-
-      // Fetch user profile
-      const userData = await apiClient.getUser()
-      setUser(userData)
-
-      return true
+        // Fetch user profile
+        const userResponse = await apiClient.get<ApiResponse<User>>("/auth/me")
+        if (userResponse.data.success && userResponse.data.data) {
+          setUser(userResponse.data.data)
+          return true
+        }
+      }
+      return false
     } catch (error) {
       console.error("Login failed:", error)
       return false
@@ -67,18 +72,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (credentials: SignupCredentials): Promise<boolean> => {
     try {
       setIsLoading(true)
+      const response = await apiClient.post<ApiResponse<AuthTokens>>("/auth/signup", credentials)
 
-      // Call mock signup API
-      const tokens = await apiClient.signup(credentials)
+      if (response.data.success && response.data.data) {
+        setAuthTokens(response.data.data)
 
-      // Store tokens
-      setAuthTokens(tokens)
-
-      // Fetch user profile
-      const userData = await apiClient.getUser()
-      setUser(userData)
-
-      return true
+        // Fetch user profile
+        const userResponse = await apiClient.get<ApiResponse<User>>("/auth/me")
+        if (userResponse.data.success && userResponse.data.data) {
+          setUser(userResponse.data.data)
+          return true
+        }
+      }
+      return false
     } catch (error) {
       console.error("Signup failed:", error)
       return false
@@ -103,10 +109,3 @@ export function useAuth() {
   }
   return context
 }
-
-/*
- * IMPORTANT: When connecting to your real backend:
- * 1. Replace the mock API calls with real API calls
- * 2. Ensure proper error handling for API responses
- * 3. Update the token refresh logic if needed
- */

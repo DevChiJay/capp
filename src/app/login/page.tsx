@@ -29,8 +29,8 @@ export default function LoginPage() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "demo@example.com", // Pre-filled for demo
-      password: "password", // Pre-filled for demo
+      email: "",
+      password: "",
       rememberMe: false,
     },
   })
@@ -54,7 +54,7 @@ export default function LoginPage() {
         toast({
           variant: "destructive",
           title: "Login failed",
-          description: "Invalid email or password. For demo, use demo@example.com / password",
+          description: "Invalid email or password",
         })
       }
     } catch (error) {
@@ -76,11 +76,6 @@ export default function LoginPage() {
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
             <p className="mt-2 text-sm text-gray-600">Sign in to your account to continue</p>
-            <div className="mt-2 rounded-md bg-blue-50 p-2 text-xs text-blue-800">
-              <p>Demo credentials:</p>
-              <p>Email: demo@example.com</p>
-              <p>Password: password</p>
-            </div>
           </div>
 
           <Form {...form}>

@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { Copy, BarChart, Pencil, Trash2, QrCode } from "lucide-react"
-import { useLinks, useDeleteLink } from "@/hooks/use-links"
+import { useLinks, useDeleteLink, useLinkQR } from "@/hooks/use-links"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
@@ -39,6 +39,8 @@ export function LinksTable() {
   const { data, isLoading, isError } = useLinks(page)
   const deleteLink = useDeleteLink()
 
+  const { data: qrCode, isLoading: isQrLoading } = useLinkQR(selectedLink?.shortCode || "")
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
     toast({
@@ -60,11 +62,6 @@ export function LinksTable() {
         description: "Failed to delete link",
       })
     }
-  }
-
-  const generateQRCode = (link: ShortLink) => {
-    const fullUrl = `${link.domain}/${link.shortCode}`
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullUrl)}`
   }
 
   if (isLoading) {
@@ -117,12 +114,12 @@ export function LinksTable() {
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <span className="text-blue-600">
-                      {link.domain}/{link.shortCode}
+                      {link.shortCode}
                     </span>
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => copyToClipboard(`${link.domain}/${link.shortCode}`)}
+                      onClick={() => copyToClipboard(`${link.shortCode}`)}
                       title="Copy link"
                     >
                       <Copy className="h-4 w-4" />
@@ -165,30 +162,35 @@ export function LinksTable() {
                           <DialogTitle>QR Code</DialogTitle>
                           <DialogDescription>Scan this QR code to access your shortened URL.</DialogDescription>
                         </DialogHeader>
-                        {selectedLink && (
-                          <div className="flex flex-col items-center justify-center space-y-4 p-4">
-                            <img
-                              src={generateQRCode(selectedLink) || "/placeholder.svg"}
-                              alt="QR Code"
-                              className="h-48 w-48"
-                            />
-                            <p className="text-center text-sm">
-                              {selectedLink.domain}/{selectedLink.shortCode}
-                            </p>
-                            <Button
-                              onClick={() => {
-                                const qrUrl = generateQRCode(selectedLink)
-                                const a = document.createElement("a")
-                                a.href = qrUrl
-                                a.download = `qrcode-${selectedLink.shortCode}.png`
-                                document.body.appendChild(a)
-                                a.click()
-                                document.body.removeChild(a)
-                              }}
-                            >
-                              Download QR Code
-                            </Button>
-                          </div>
+                        {isQrLoading ? (
+                          <Skeleton className="h-48 w-48" />
+                        ) : (
+                          selectedLink && qrCode && (
+                            <div className="flex flex-col items-center justify-center space-y-4 p-4">
+                              <img
+                                src={qrCode}
+                                alt="QR Code"
+                                className="h-48 w-48"
+                              />
+                              <p className="text-center text-sm">
+                                {selectedLink.shortCode}
+                              </p>
+                              <Button
+                                onClick={() => {
+                                  if (qrCode) {
+                                    const a = document.createElement("a");
+                                    a.href = qrCode;
+                                    a.download = `qrcode-${selectedLink?.shortCode}.png`;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                  }
+                                }}
+                              >
+                                Download QR Code
+                              </Button>
+                            </div>
+                          )
                         )}
                       </DialogContent>
                     </Dialog>

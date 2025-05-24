@@ -15,7 +15,6 @@ export const mockLinks: ShortLink[] = [
     originalUrl: "https://example.com/very/long/url/that/needs/to/be/shortened/for/better/sharing",
     shortCode: "abc123",
     customSlug: "example",
-    domain: "short.ly",
     createdAt: new Date().toISOString(),
     userId: "user-1",
     clicks: 42,
@@ -25,7 +24,6 @@ export const mockLinks: ShortLink[] = [
     id: "link-2",
     originalUrl: "https://docs.google.com/document/d/1234567890abcdefghijklmnopqrstuvwxyz",
     shortCode: "def456",
-    domain: "short.ly",
     createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
     userId: "user-1",
     clicks: 17,
@@ -34,7 +32,6 @@ export const mockLinks: ShortLink[] = [
     id: "link-3",
     originalUrl: "https://github.com/vercel/next.js",
     shortCode: "ghi789",
-    domain: "s.id",
     createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
     userId: "user-1",
     clicks: 128,
@@ -44,7 +41,6 @@ export const mockLinks: ShortLink[] = [
     id: "link-4",
     originalUrl: "https://tailwindcss.com/docs/installation",
     shortCode: "jkl012",
-    domain: "short.ly",
     createdAt: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
     userId: "user-1",
     clicks: 5,
@@ -54,7 +50,6 @@ export const mockLinks: ShortLink[] = [
     id: "link-5",
     originalUrl: "https://react-query.tanstack.com/overview",
     shortCode: "mno345",
-    domain: "s.id",
     createdAt: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
     userId: "user-1",
     clicks: 73,

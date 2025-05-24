@@ -10,7 +10,7 @@ export function useLinks(page = 1, limit = 10) {
     queryKey: ["links", page, limit],
     queryFn: async () => {
       const response = await apiClient.get<ApiResponse<{ links: ShortLink[]; total: number }>>(
-        `/links?page=${page}&limit=${limit}`,
+        `/url/user/urls?page=${page}&limit=${limit}`,
       )
       return response.data.data
     },
@@ -23,7 +23,7 @@ export function useCreateLink() {
 
   return useMutation({
     mutationFn: async (data: UrlFormData) => {
-      const response = await apiClient.post<ApiResponse<ShortLink>>("/links", data)
+      const response = await apiClient.post<ApiResponse<ShortLink>>("/url/shorten", data)
       return response.data.data
     },
     onSuccess: () => {
@@ -37,8 +37,8 @@ export function useUpdateLink() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<UrlFormData> }) => {
-      const response = await apiClient.put<ApiResponse<ShortLink>>(`/links/${id}`, data)
+    mutationFn: async ({ shortCode, data }: { shortCode: string; data: Partial<UrlFormData> }) => {
+      const response = await apiClient.patch<ApiResponse<ShortLink>>(`/url/${shortCode}`, data)
       return response.data.data
     },
     onSuccess: () => {
@@ -52,8 +52,8 @@ export function useDeleteLink() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const response = await apiClient.delete<ApiResponse<void>>(`/links/${id}`)
+    mutationFn: async (shortCode: string) => {
+      const response = await apiClient.delete<ApiResponse<void>>(`/url/${shortCode}`)
       return response.data.success
     },
     onSuccess: () => {
@@ -62,25 +62,49 @@ export function useDeleteLink() {
   })
 }
 
-// Get link statistics
-export function useLinkStats(id: string) {
+// Get link redirect URL
+export function useLinkRedirect(shortCode: string) {
   return useQuery({
-    queryKey: ["linkStats", id],
+    queryKey: ["linkRedirect", shortCode],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<LinkStats>>(`/links/${id}/stats`)
-      return response.data.data
+      return apiClient.get<ApiResponse<string>>(`/${shortCode}`)
     },
-    enabled: !!id,
+    enabled: !!shortCode,
   })
 }
 
-// Get available domains
-export function useDomains() {
+// Get link QR code
+export function useLinkQR(shortCode: string) {
   return useQuery({
-    queryKey: ["domains"],
+    queryKey: ["linkQR", shortCode],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<string[]>>("/domains")
-      return response.data.data || []
+      const response = await apiClient.get<ApiResponse<string>>(`/url/${shortCode}/qr`)
+      return response.data
     },
+    enabled: !!shortCode,
+  })
+}
+
+// Get link statistics
+export function useLinkStats(shortCode: string) {
+  return useQuery({
+    queryKey: ["linkStats", shortCode],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<LinkStats>>(`/url/${shortCode}/stats`)
+      return response.data.data
+    },
+    enabled: !!shortCode,
+  })
+}
+
+// Get user statistics
+export function useUserStats() {
+  return useQuery({
+    queryKey: ["userStats"],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<LinkStats[]>>(`/url/user/stats`)
+      return response.data
+    },
+    enabled: true,
   })
 }

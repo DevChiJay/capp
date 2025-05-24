@@ -17,7 +17,6 @@ export interface ShortLink {
   originalUrl: string
   shortCode: string
   customSlug?: string
-  domain: string
   expiresAt?: string
   description?: string
   createdAt: string
@@ -49,7 +48,6 @@ export interface LinkStats {
 export interface UrlFormData {
   originalUrl: string
   customSlug?: string
-  domain?: string
   expiresAt?: string
   description?: string
 }

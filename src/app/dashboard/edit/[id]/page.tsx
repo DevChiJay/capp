@@ -7,14 +7,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { format } from "date-fns"
 import { CalendarIcon, ArrowLeft } from "lucide-react"
-import { useLinks, useUpdateLink, useDomains } from "@/hooks/use-links"
+import { useLinks, useUpdateLink } from "@/hooks/use-links"
 import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
@@ -22,7 +21,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const editLinkSchema = z.object({
   customSlug: z.string().optional(),
-  domain: z.string(),
   expiresAt: z.date().optional().nullable(),
   description: z.string().optional(),
 })
@@ -33,14 +31,12 @@ export default function EditLinkPage() {
   const id = params.id as string
 
   const { data: linksData, isLoading: isLoadingLink } = useLinks()
-  const { data: domains = [] } = useDomains()
   const updateLink = useUpdateLink()
 
   const form = useForm<z.infer<typeof editLinkSchema>>({
     resolver: zodResolver(editLinkSchema),
     defaultValues: {
       customSlug: "",
-      domain: "",
       expiresAt: null,
       description: "",
     },
@@ -53,7 +49,6 @@ export default function EditLinkPage() {
       if (link) {
         form.reset({
           customSlug: link.customSlug || "",
-          domain: link.domain,
           expiresAt: link.expiresAt ? new Date(link.expiresAt) : null,
           description: link.description || "",
         })
@@ -67,7 +62,6 @@ export default function EditLinkPage() {
         id,
         data: {
           customSlug: data.customSlug || undefined,
-          domain: data.domain,
           expiresAt: data.expiresAt ? data.expiresAt.toISOString() : undefined,
           description: data.description || undefined,
         },
@@ -143,31 +137,6 @@ export default function EditLinkPage() {
                       <FormControl>
                         <Input placeholder="e.g., my-custom-link" {...field} />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="domain"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Domain</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a domain" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {domains.map((domain) => (
-                            <SelectItem key={domain} value={domain}>
-                              {domain}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

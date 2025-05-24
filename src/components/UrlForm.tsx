@@ -6,12 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react"
 import { format } from "date-fns"
-import { useCreateLink, useDomains } from "@/hooks/use-links"
+import { useCreateLink } from "@/hooks/use-links"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
@@ -20,14 +19,12 @@ import type { UrlFormData } from "@/lib/types"
 const urlSchema = z.object({
   originalUrl: z.string().url({ message: "Please enter a valid URL" }),
   customSlug: z.string().optional(),
-  domain: z.string().optional(),
   expiresAt: z.date().optional(),
   description: z.string().optional(),
 })
 
 export function UrlForm() {
   const [showAdvanced, setShowAdvanced] = useState(false)
-  const { data: domains = [] } = useDomains()
   const createLink = useCreateLink()
 
   const form = useForm<z.infer<typeof urlSchema>>({
@@ -35,7 +32,6 @@ export function UrlForm() {
     defaultValues: {
       originalUrl: "",
       customSlug: "",
-      domain: domains[0] || "",
       description: "",
     },
   })
@@ -48,7 +44,6 @@ export function UrlForm() {
 
       if (showAdvanced) {
         if (data.customSlug) formData.customSlug = data.customSlug
-        if (data.domain) formData.domain = data.domain
         if (data.expiresAt) formData.expiresAt = data.expiresAt.toISOString()
         if (data.description) formData.description = data.description
       }
@@ -58,7 +53,7 @@ export function UrlForm() {
       if (result) {
         toast({
           title: "URL shortened successfully!",
-          description: `Your short URL: ${result.domain}/${result.shortCode}`,
+          description: `Your short URL: ${result.shortCode}`,
         })
         form.reset()
       }
@@ -114,31 +109,6 @@ export function UrlForm() {
 
           {showAdvanced && (
             <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="domain"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Domain</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a domain" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {domains.map((domain) => (
-                          <SelectItem key={domain} value={domain}>
-                            {domain}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="customSlug"

@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import type { User, LoginCredentials, SignupCredentials, ApiResponse, AuthTokens } from "./types"
 import apiClient from "./api-client"
 import { setAuthTokens, getAuthTokens, clearAuthTokens } from "./auth"
@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   // Check for existing auth on mount
   useEffect(() => {
@@ -28,9 +29,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (tokens?.accessToken) {
         try {
           // Fetch user profile
-          const response = await apiClient.get<ApiResponse<User>>("/auth/me")
-          if (response.data.success && response.data.data) {
-            setUser(response.data.data)
+          const response = await apiClient.get<ApiResponse<User>>("/auth/profile")
+          if (response.data.success && response.data.user) {
+            setUser(response.data.user)
           } else {
             clearAuthTokens()
           }
@@ -52,13 +53,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.data.success && response.data.data) {
         setAuthTokens(response.data.data)
-
-        // Fetch user profile
-        const userResponse = await apiClient.get<ApiResponse<User>>("/auth/me")
-        if (userResponse.data.success && userResponse.data.data) {
-          setUser(userResponse.data.data)
-          return true
-        }
+        setUser(response.data.data.user)
+        
+        // Check for callback URL
+        const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard"
+        router.push(callbackUrl)
+        return true
       }
       return false
     } catch (error) {
@@ -72,17 +72,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (credentials: SignupCredentials): Promise<boolean> => {
     try {
       setIsLoading(true)
-      const response = await apiClient.post<ApiResponse<AuthTokens>>("/auth/signup", credentials)
+      const response = await apiClient.post<ApiResponse<AuthTokens>>("/auth/register", credentials)
 
       if (response.data.success && response.data.data) {
         setAuthTokens(response.data.data)
-
-        // Fetch user profile
-        const userResponse = await apiClient.get<ApiResponse<User>>("/auth/me")
-        if (userResponse.data.success && userResponse.data.data) {
-          setUser(userResponse.data.data)
-          return true
-        }
+        setUser(response.data.data.user)
+        router.push("/dashboard")
+        return true
       }
       return false
     } catch (error) {

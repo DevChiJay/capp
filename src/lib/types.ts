@@ -2,6 +2,7 @@
 export interface ApiResponse<T> {
   success: boolean
   data?: T
+  user?: T
   error?: string
 }
 
@@ -16,6 +17,7 @@ export interface ShortLink {
   id: string
   originalUrl: string
   shortCode: string
+  shortUrl: string
   customSlug?: string
   expiresAt?: string
   description?: string
@@ -56,6 +58,7 @@ export interface UrlFormData {
 export interface AuthTokens {
   accessToken: string
   refreshToken: string
+  user: User
 }
 
 export interface LoginCredentials {

@@ -42,12 +42,12 @@ apiClient.interceptors.response.use(
 
           // Call refresh token endpoint
           const response = await axios.post<ApiResponse<AuthTokens>>(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"}/auth/refresh-token`,
             { refreshToken: tokens.refreshToken }
           );
 
           if (response.data.success && response.data.data) {
-            // Update tokens in storage
+            // Update tokens in storage (both cookies and localStorage)
             setAuthTokens(response.data.data);
 
             // Retry original request with new token
@@ -59,7 +59,9 @@ apiClient.interceptors.response.use(
         } catch (refreshError) {
           // If refresh fails, clear tokens and redirect to login
           clearAuthTokens();
-          window.location.href = "/login";
+          if (typeof window !== 'undefined') {
+            window.location.href = "/login";
+          }
           return Promise.reject(refreshError);
         }
       }

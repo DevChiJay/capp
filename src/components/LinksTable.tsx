@@ -83,7 +83,7 @@ export function LinksTable() {
     )
   }
 
-  if (!data?.links.length) {
+  if (!data?.links?.length) {
     return (
       <div className="rounded-md bg-gray-50 p-8 text-center">
         <h3 className="text-lg font-medium">No links yet</h3>

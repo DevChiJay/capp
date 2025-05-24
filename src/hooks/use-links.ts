@@ -62,17 +62,6 @@ export function useDeleteLink() {
   })
 }
 
-// Get link redirect URL
-export function useLinkRedirect(shortCode: string) {
-  return useQuery({
-    queryKey: ["linkRedirect", shortCode],
-    queryFn: async () => {
-      return apiClient.get<ApiResponse<string>>(`/${shortCode}`)
-    },
-    enabled: !!shortCode,
-  })
-}
-
 // Get link QR code
 export function useLinkQR(shortCode: string) {
   return useQuery({

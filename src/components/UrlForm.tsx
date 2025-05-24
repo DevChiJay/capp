@@ -53,7 +53,7 @@ export function UrlForm() {
       if (result) {
         toast({
           title: "URL shortened successfully!",
-          description: `Your short URL: ${result.shortCode}`,
+          description: `Your short URL: ${result.shortUrl}`,
         })
         form.reset()
       }
@@ -114,9 +114,9 @@ export function UrlForm() {
                 name="customSlug"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Custom Slug (optional)</FormLabel>
+                    <FormLabel>Custom Slug</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., my-custom-link" {...field} />
+                      <Input placeholder="e.g., /something" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -128,7 +128,7 @@ export function UrlForm() {
                 name="expiresAt"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Expiry Date (optional)</FormLabel>
+                    <FormLabel>Expiry Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -158,7 +158,7 @@ export function UrlForm() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description (optional)</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea placeholder="Add a description for this link" {...field} />
                     </FormControl>

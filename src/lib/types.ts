@@ -3,6 +3,7 @@ export interface ApiResponse<T> {
   success: boolean
   data?: T
   user?: T
+  count?: number
   error?: string
 }
 
@@ -19,6 +20,7 @@ export interface ShortLink {
   shortCode: string
   shortUrl: string
   customSlug?: string
+  qrCode?: string
   expiresAt?: string
   description?: string
   createdAt: string
@@ -50,7 +52,7 @@ export interface LinkStats {
 export interface UrlFormData {
   originalUrl: string
   customSlug?: string
-  expiresAt?: string
+  expirationDays?: number
   description?: string
 }
 

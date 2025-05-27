@@ -9,10 +9,10 @@ export function useLinks(page = 1, limit = 10) {
   return useQuery({
     queryKey: ["links", page, limit],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<{ links: ShortLink[]; total: number }>>(
+      const response = await apiClient.get<ApiResponse<{ data: ShortLink[]; count: number }>>(
         `/url/user/urls?page=${page}&limit=${limit}`,
       )
-      return response.data.data
+      return response.data
     },
   })
 }
@@ -61,19 +61,6 @@ export function useDeleteLink() {
     },
   })
 }
-
-// Get link QR code
-export function useLinkQR(shortCode: string) {
-  return useQuery({
-    queryKey: ["linkQR", shortCode],
-    queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<string>>(`/url/${shortCode}/qr`)
-      return response.data
-    },
-    enabled: !!shortCode,
-  })
-}
-
 // Get link statistics
 export function useLinkStats(shortCode: string) {
   return useQuery({

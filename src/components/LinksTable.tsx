@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { Copy, BarChart, Pencil, Trash2, QrCode } from "lucide-react"
-import { useLinks, useDeleteLink, useLinkQR } from "@/hooks/use-links"
+import { useLinks, useDeleteLink } from "@/hooks/use-links"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
@@ -30,6 +30,8 @@ import { toast } from "@/components/ui/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { ShortLink } from "@/lib/types"
 
+const url = process.env.NEXT_PUBLIC_BASE_URL
+
 export function LinksTable() {
   const [page, setPage] = useState(1)
   const [selectedLink, setSelectedLink] = useState<ShortLink | null>(null)
@@ -38,8 +40,6 @@ export function LinksTable() {
 
   const { data, isLoading, isError } = useLinks(page)
   const deleteLink = useDeleteLink()
-
-  const { data: qrCode, isLoading: isQrLoading } = useLinkQR(selectedLink?.shortCode || "")
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -83,7 +83,7 @@ export function LinksTable() {
     )
   }
 
-  if (!data?.links?.length) {
+  if (!data?.data) {
     return (
       <div className="rounded-md bg-gray-50 p-8 text-center">
         <h3 className="text-lg font-medium">No links yet</h3>
@@ -100,26 +100,26 @@ export function LinksTable() {
             <TableRow>
               <TableHead>Original URL</TableHead>
               <TableHead>Short Link</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead>Expiry</TableHead>
               <TableHead>Clicks</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.links.map((link) => (
-              <TableRow key={link.id}>
+            {data.data.map((link) => (
+              <TableRow key={link.shortCode}>
                 <TableCell className="max-w-[200px] truncate font-medium" title={link.originalUrl}>
                   {link.originalUrl}
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <span className="text-blue-600">
-                      {link.shortCode}
+                      {`${url}/${link.shortCode}`}
                     </span>
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => copyToClipboard(`${link.shortCode}`)}
+                      onClick={() => copyToClipboard(`${url}/${link.shortCode}`)}
                       title="Copy link"
                     >
                       <Copy className="h-4 w-4" />
@@ -127,7 +127,7 @@ export function LinksTable() {
                     </Button>
                   </div>
                 </TableCell>
-                <TableCell>{format(new Date(link.createdAt), "MMM d, yyyy")}</TableCell>
+                <TableCell>{format(new Date(link.expiresAt), "MMM d, yyyy")}</TableCell>
                 <TableCell>{link.clicks}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end space-x-1">
@@ -162,33 +162,41 @@ export function LinksTable() {
                           <DialogTitle>QR Code</DialogTitle>
                           <DialogDescription>Scan this QR code to access your shortened URL.</DialogDescription>
                         </DialogHeader>
-                        {isQrLoading ? (
+                        {isLoading ? (
                           <Skeleton className="h-48 w-48" />
                         ) : (
-                          selectedLink && qrCode && (
+                          selectedLink && (
                             <div className="flex flex-col items-center justify-center space-y-4 p-4">
                               <img
-                                src={qrCode}
+                                src={selectedLink.qrCode}
                                 alt="QR Code"
                                 className="h-48 w-48"
                               />
                               <p className="text-center text-sm">
-                                {selectedLink.shortCode}
+                                {`${url}/${selectedLink.shortCode}`}
                               </p>
-                              <Button
-                                onClick={() => {
-                                  if (qrCode) {
-                                    const a = document.createElement("a");
-                                    a.href = qrCode;
-                                    a.download = `qrcode-${selectedLink?.shortCode}.png`;
-                                    document.body.appendChild(a);
-                                    a.click();
-                                    document.body.removeChild(a);
-                                  }
-                                }}
-                              >
-                                Download QR Code
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  onClick={() => copyToClipboard(`${url}/${selectedLink.shortCode}`)}
+                                  variant="outline"
+                                >
+                                  Copy URL
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    if (selectedLink.qrCode) {
+                                      const a = document.createElement("a");
+                                      a.href = selectedLink.qrCode;
+                                      a.download = `qrcode-${selectedLink?.shortCode}.png`;
+                                      document.body.appendChild(a);
+                                      a.click();
+                                      document.body.removeChild(a);
+                                    }
+                                  }}
+                                >
+                                  Download QR Code
+                                </Button>
+                              </div>
                             </div>
                           )
                         )}
@@ -246,19 +254,19 @@ export function LinksTable() {
         </Table>
       </div>
 
-      {data.total > 10 && (
+      {data.count && data.count > 10 && (
         <div className="mt-4 flex items-center justify-center space-x-2">
           <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>
             Previous
           </Button>
           <span className="text-sm text-gray-600">
-            Page {page} of {Math.ceil(data.total / 10)}
+            Page {page} of {Math.ceil(data.count / 10)}
           </span>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setPage((p) => p + 1)}
-            disabled={page >= Math.ceil(data.total / 10)}
+            disabled={page >= Math.ceil(data.count / 10)}
           >
             Next
           </Button>

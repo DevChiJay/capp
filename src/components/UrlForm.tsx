@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ChevronDown, ChevronUp, Copy } from "lucide-react"
+import { ChevronDown, ChevronUp, Copy, LogIn } from "lucide-react"
 import { useCreateLink } from "@/hooks/use-links"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/hooks/use-toast"
+import { useAuth } from "@/lib/auth-context"
+import Link from "next/link"
 import {
   Dialog,
   DialogContent,
@@ -36,6 +38,7 @@ export function UrlForm() {
   const [qrDialogOpen, setQrDialogOpen] = useState(false)
   const [createdLink, setCreatedLink] = useState<ShortLink | null>(null)
   const createLink = useCreateLink()
+  const { user } = useAuth()
 
   const form = useForm<z.infer<typeof urlSchema>>({
     resolver: zodResolver(urlSchema),
@@ -53,7 +56,8 @@ export function UrlForm() {
         originalUrl: data.originalUrl,
       }
 
-      if (showAdvanced) {
+      // Only include advanced options if user is authenticated and advanced options are shown
+      if (user && showAdvanced) {
         if (data.customSlug) formData.customSlug = data.customSlug
         if (data.expirationDays) formData.expirationDays = data.expirationDays
         if (data.description) formData.description = data.description
@@ -105,82 +109,91 @@ export function UrlForm() {
           </div>
 
           <div>
-            <Button
-              type="button"
-              variant="ghost"
-              className="flex items-center p-0 text-sm font-medium text-gray-600"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-            >
-              {showAdvanced ? (
-                <>
-                  <ChevronUp className="mr-1 h-4 w-4" />
-                  Hide Advanced Options
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="mr-1 h-4 w-4" />
-                  Show Advanced Options
-                </>
-              )}
-            </Button>
-
-            {showAdvanced && (
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="customSlug"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Custom Slug</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., /something" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+            {user ? (
+              <>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="flex items-center p-0 text-sm font-medium text-gray-600"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                >
+                  {showAdvanced ? (
+                    <>
+                      <ChevronUp className="mr-1 h-4 w-4" />
+                      Hide Advanced Options
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="mr-1 h-4 w-4" />
+                      Show Advanced Options
+                    </>
                   )}
-                />
+                </Button>
 
-                <FormField
-                  control={form.control}
-                  name="expirationDays"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Expiry Date</FormLabel>
-                      <Select 
-                        value={field.value.toString()} 
-                        onValueChange={(value) => field.onChange(parseInt(value))}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select expiration period" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="1">1 Day</SelectItem>
-                          <SelectItem value="7">7 Days</SelectItem>
-                          <SelectItem value="14">14 Days</SelectItem>
-                          <SelectItem value="30">30 Days</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {showAdvanced && (
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="customSlug"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Custom Slug</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., /something" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Add a description for this link" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                    <FormField
+                      control={form.control}
+                      name="expirationDays"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Expiry Date</FormLabel>
+                          <Select 
+                            value={field.value.toString()} 
+                            onValueChange={(value) => field.onChange(parseInt(value))}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select expiration period" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="1">1 Day</SelectItem>
+                              <SelectItem value="7">7 Days</SelectItem>
+                              <SelectItem value="14">14 Days</SelectItem>
+                              <SelectItem value="30">30 Days</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Add a description for this link" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <Link href="/login" className="mt-2 flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                <LogIn className="mr-1 h-4 w-4" />
+                Login for advanced options
+              </Link>
             )}
           </div>
         </form>

@@ -9,6 +9,10 @@ const config: Config = {
     "*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
+    fontFamily: {
+      sans: ["var(--font-plus-jakarta)", "system-ui", "sans-serif"],
+      heading: ["var(--font-outfit)", "system-ui", "sans-serif"],
+    },
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',

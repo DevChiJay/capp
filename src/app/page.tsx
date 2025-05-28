@@ -12,14 +12,17 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
+        <section className="bg-gradient-to-br from-blue-50 via-white to-gray-50 py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl text-center">
-              <h1 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl md:text-4xl">
-                Cut your long links
+              <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
+                Transform Long Links Into Short Power
               </h1>
+              <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">
+                Instantly create short, memorable links that drive more clicks and track better analytics
+              </p>
 
-              <div className="mx-auto max-w-3xl rounded-xl border bg-white p-6 shadow-sm">
+              <div className="mx-auto max-w-3xl rounded-xl border border-blue-100 bg-white p-8 shadow-lg">
                 <UrlForm />
               </div>
             </div>
@@ -31,34 +34,28 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="grid items-center gap-8 md:grid-cols-2">
               <div>
-                <h2 className="mb-4 text-3xl font-bold md:text-4xl">Powerful analytics at your fingertips</h2>
+                <h2 className="mb-4 font-heading text-3xl font-bold md:text-4xl">Powerful analytics at your fingertips</h2>
                 <p className="mb-6 text-lg text-gray-600">
                   Everything you need to manage, track, and optimize your shortened URLs.
                 </p>
                 <ul className="mb-8 space-y-4">
                   <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-green-100 p-1 text-green-600">
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <div className="mr-3 mt-1 rounded-full bg-blue-100 p-2 text-blue-600">
+                      <Link2 className="h-4 w-4" />
                     </div>
-                    <span>Create, edit, and organize your links</span>
+                    <span className="mt-1">Create, edit, and organize your links</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-green-100 p-1 text-green-600">
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <div className="mr-3 mt-1 rounded-full bg-indigo-100 p-2 text-indigo-600">
+                      <Globe className="h-4 w-4" />
                     </div>
-                    <span>Use your own branded domain</span>
+                    <span className="mt-1">Use your own branded domain</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-green-100 p-1 text-green-600">
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <div className="mr-3 mt-1 rounded-full bg-purple-100 p-2 text-purple-600">
+                      <BarChart className="h-4 w-4" />
                     </div>
-                    <span>Track clicks and browsers referrers</span>
+                    <span className="mt-1">Track clicks and browser referrers</span>
                   </li>
                 </ul>
                 <Button asChild size="lg">
@@ -99,20 +96,20 @@ export default function HomePage() {
                 </div>
               </div>
               <div>
-                <h2 className="mb-4 text-3xl font-bold md:text-4xl">Shorten URLs on the go</h2>
+                <h2 className="mb-4 font-heading text-3xl font-bold md:text-4xl">Shorten URLs on the go</h2>
                 <p className="mb-6 text-lg text-gray-600">
                   Download our mobile app to create and manage shortened links from anywhere. Track analytics and
                   generate QR codes directly from your phone.
                 </p>
                 <div className="mb-8 flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                  <Button variant="outline" size="lg" className="flex items-center justify-center">
+                  <Button variant="outline" size="lg" className="flex items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 border-none">
                     <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.9 19.9l-5.4-5.4 5.4-5.4c.39-.39.39-1.02 0-1.41s-1.02-.39-1.41 0l-5.4 5.4-5.4-5.4c-.39-.39-1.02-.39-1.41 0s-.39 1.02 0 1.41l5.4 5.4-5.4 5.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l5.4-5.4 5.4 5.4c.39.39 1.02.39 1.41 0 .38-.39.39-1.03 0-1.42z" />
                     </svg>
                     Download for Android
                   </Button>
-                  <div className="flex items-center justify-center rounded-lg border border-gray-300 p-4">
-                    <QrCode className="h-24 w-24 text-gray-800" />
+                  <div className="flex items-center justify-center rounded-lg border border-blue-100 p-4 shadow-md">
+                    <QrCode className="h-24 w-24 text-blue-600" />
                   </div>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -124,17 +121,27 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-blue-600 py-16 text-white md:py-24">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="mb-4 text-3xl font-bold md:text-4xl">Ready to get started?</h2>
+        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16 text-white md:py-24 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+          </div>
+          <div className="container mx-auto px-4 text-center relative z-10">
+            <h2 className="mb-4 text-3xl font-heading font-bold md:text-4xl">Ready to get started?</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100">
               Join thousands of users who trust our platform for their link shortening needs.
             </p>
             <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-              <Button size="lg" variant="secondary" asChild>
+              <Button size="lg" variant="secondary" asChild className="font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
                 <Link href="/signup">Create Free Account</Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-transparent text-white hover:bg-blue-700" asChild>
+              <Button size="lg" variant="outline" className="bg-transparent text-white hover:bg-blue-700 border-2 font-semibold transition-all duration-200" asChild>
                 <Link href="/pricing">View Pricing</Link>
               </Button>
             </div>

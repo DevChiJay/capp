@@ -8,8 +8,8 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_LIMIT = 5 // Allow multiple toasts
+const TOAST_REMOVE_DELAY = 5000 // Set a reasonable delay for toast removal
 
 type ToasterToast = ToastProps & {
   id: string

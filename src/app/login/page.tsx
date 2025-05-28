@@ -101,7 +101,7 @@ export default function LoginPage() {
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Password</FormLabel>
-                      <Link href="/forgot-password" className="text-xs text-blue-600 hover:text-blue-800">
+                      <Link href="/forgot-password" className="text-xs text-navyblue-500 hover:text-navyblue-700">
                         Forgot password?
                       </Link>
                     </div>
@@ -135,7 +135,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center text-sm">
             <p className="text-gray-600">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-800">
+              <Link href="/signup" className="font-medium text-navyblue-500 hover:text-navyblue-700">
                 Sign up
               </Link>
             </p>

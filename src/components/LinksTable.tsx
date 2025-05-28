@@ -169,7 +169,7 @@ export function LinksTable() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
-                    <span className="text-blue-600">
+                    <span className="text-navyblue-500">
                       {`${url}/${link.shortCode}`}
                     </span>
                     <Button

@@ -12,17 +12,17 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-50 via-white to-gray-50 py-16 md:py-24">
+        <section className="bg-gradient-to-br from-navyblue-50 via-white to-gray-50 py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl text-center">
-              <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
-                Transform Long Links Into Short Power
+              <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-navyblue-500 to-indigo-600">
+                Transform Into Short Power
               </h1>
               <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">
-                Instantly create short, memorable links that drive more clicks and track better analytics
+                Instantly capp.to short, memorable links
               </p>
 
-              <div className="mx-auto max-w-3xl rounded-xl border border-blue-100 bg-white p-8 shadow-lg">
+              <div className="mx-auto max-w-3xl rounded-xl border border-navyblue-100 bg-white p-8 shadow-lg">
                 <UrlForm />
               </div>
             </div>
@@ -40,7 +40,7 @@ export default function HomePage() {
                 </p>
                 <ul className="mb-8 space-y-4">
                   <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-blue-100 p-2 text-blue-600">
+                    <div className="mr-3 mt-1 rounded-full bg-navyblue-100 p-2 text-navyblue-500">
                       <Link2 className="h-4 w-4" />
                     </div>
                     <span className="mt-1">Create, edit, and organize your links</span>
@@ -121,7 +121,7 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-indigo-700 py-16 text-white md:py-24 relative overflow-hidden">
+        <section className="bg-gradient-to-r from-navyblue-500 to-indigo-700 py-16 text-white md:py-24 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <defs>

@@ -24,14 +24,13 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
-            <Image src="/images/logo.png" alt="URL Shortener" width={40} height={40} />
-            <span className="ml-2 text-xl font-bold">Capp</span>
+            <Image src="/logo-capp.svg" alt="Capp URL Shortener" width={240} height={60} />
           </Link>
         </div>
 
         <div className="hidden items-center md:flex">
           <nav className="mx-6 flex items-center space-x-6">
-            <Link href="/pricing" className="text-sm font-medium hover:text-blue-600">
+            <Link href="/pricing" className="text-sm font-medium hover:text-navyblue-500">
               Pricing
             </Link>
           </nav>

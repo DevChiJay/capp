@@ -29,15 +29,15 @@ export default function PricingPage() {
               </p>
 
               <div className="mb-10 flex items-center justify-center space-x-4">
-                <span className={`text-sm font-medium ${!isAnnual ? "text-blue-600" : "text-gray-600"}`}>
+                <span className={`text-sm font-medium ${!isAnnual ? "text-navyblue-500" : "text-gray-600"}`}>
                   Monthly
                 </span>
                 <Switch
                   checked={isAnnual}
                   onCheckedChange={setIsAnnual}
-                  className="data-[state=checked]:bg-blue-600"
+                  className="data-[state=checked]:bg-navyblue-500"
                 />
-                <span className={`text-sm font-medium ${isAnnual ? "text-blue-600" : "text-gray-600"}`}>
+                <span className={`text-sm font-medium ${isAnnual ? "text-navyblue-500" : "text-gray-600"}`}>
                   Lifetime
                   <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
                     Save 40%+
@@ -102,13 +102,13 @@ export default function PricingPage() {
           </div>
         </section>
 
-        <section className="bg-blue-600 py-16 text-white">
+        <section className="bg-navyblue-500 py-16 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">Ready to supercharge your links?</h2>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100">
+            <p className="mx-auto mb-8 max-w-2xl text-lg text-navyblue-100">
               Join thousands of users who trust our platform for their link shortening needs.
             </p>
-            <div className="inline-flex items-center rounded-md bg-white px-6 py-3 font-medium text-blue-600 shadow-lg hover:bg-gray-100">
+            <div className="inline-flex items-center rounded-md bg-white px-6 py-3 font-medium text-navyblue-500 shadow-lg hover:bg-gray-100">
               Get started for free
             </div>
           </div>

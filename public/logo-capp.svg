@@ -1,0 +1,59 @@
+<svg width="300" height="75" viewBox="0 0 300 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- No background rectangle for transparency -->
+  
+  <!-- Icon: QR-inspired grid with slicing effect -->
+  <g transform="translate(15, 12.5)">
+    <!-- QR-style background grid - Navy Blue -->
+    <rect x="0" y="0" width="50" height="50" rx="8" fill="#183153"/>
+    
+    <!-- QR pattern (simplified) -->
+    <rect x="5" y="5" width="8" height="8" rx="1" fill="white"/>
+    <rect x="37" y="5" width="8" height="8" rx="1" fill="white"/>
+    <rect x="5" y="37" width="8" height="8" rx="1" fill="white"/>
+    
+    <rect x="18" y="8" width="3" height="3" fill="white"/>
+    <rect x="25" y="8" width="3" height="3" fill="white"/>
+    <rect x="32" y="8" width="3" height="3" fill="white"/>
+    
+    <rect x="8" y="18" width="3" height="3" fill="white"/>
+    <rect x="15" y="18" width="6" height="3" fill="white"/>
+    <rect x="25" y="18" width="3" height="3" fill="white"/>
+    <rect x="32" y="18" width="3" height="3" fill="white"/>
+    <rect x="39" y="18" width="3" height="3" fill="white"/>
+    
+    <rect x="8" y="25" width="3" height="6" fill="white"/>
+    <rect x="18" y="28" width="6" height="3" fill="white"/>
+    <rect x="32" y="25" width="3" height="6" fill="white"/>
+    
+    <rect x="15" y="37" width="3" height="3" fill="white"/>
+    <rect x="25" y="37" width="6" height="3" fill="white"/>
+    <rect x="37" y="37" width="3" height="3" fill="white"/>
+    
+    <!-- Diagonal slice effect - Lighter blue accent -->
+    <path d="M0 0 L50 50" stroke="#4A90E2" stroke-width="4" opacity="0.8"/>
+    <path d="M-5 -5 L55 55" stroke="#4A90E2" stroke-width="1.5" opacity="0.4"/>
+    <path d="M5 5 L45 45" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+  </g>
+  
+  <!-- Text: Bold, modern typeface - Navy Blue Gradient -->
+  <g>
+    <defs>
+      <linearGradient id="navyTextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#183153;stop-opacity:1" />
+        <stop offset="50%" style="stop-color:#2B4162;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#4A90E2;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <text x="80" y="50" font-family="Inter, Arial, sans-serif" font-size="45" fill="url(#navyTextGrad)" font-weight="800" letter-spacing="0">
+      capp
+    </text>
+  </g>
+  
+  <!-- Accent dot - Navy Blue -->
+  <circle cx="245" cy="45" r="3" fill="#183153"/>
+  
+  <!-- Subtitle - Navy Blue -->
+  <text x="82" y="65" font-family="Inter, Arial, sans-serif" font-size="9" fill="#2B4162" font-weight="500" letter-spacing="1.2">
+    SHORTEN • TRACK • ANALYZE
+  </text>
+</svg>

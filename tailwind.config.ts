@@ -17,6 +17,20 @@ const config: Config = {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+        // Add a custom navy blue color
+        navyblue: {
+          50: '#f0f4fa',
+          100: '#dce4f2',
+          200: '#bccce6',
+          300: '#8ea9d4',
+          400: '#6286c0',
+          500: '#4169af',
+          600: '#345394',
+          700: '#2d4379',
+          800: '#293a65',
+          900: '#273355',
+          950: '#18203a',
+        },
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

@@ -19,9 +19,9 @@ export function Price({ plan, currency, symbol, isAnnual }: PriceProps) {
   const priceValue = currency === "USD" ? price.usd : price.ngn
 
   return (
-    <Card className={`flex flex-col ${plan.popular ? "border-blue-600 shadow-lg" : ""}`}>
+    <Card className={`flex flex-col ${plan.popular ? "border-navyblue-500 shadow-lg" : ""}`}>
       {plan.popular && (
-        <div className="absolute inset-x-0 -top-5 mx-auto w-32 rounded-full bg-blue-600 py-1 text-center text-xs font-medium text-white">
+        <div className="absolute inset-x-0 -top-5 mx-auto w-32 rounded-full bg-navyblue-500 py-1 text-center text-xs font-medium text-white">
           Popular
         </div>
       )}
@@ -50,7 +50,7 @@ export function Price({ plan, currency, symbol, isAnnual }: PriceProps) {
       <CardFooter>
         <Button
           variant={plan.popular ? "default" : "outline"}
-          className={`w-full ${plan.popular ? "bg-blue-600 hover:bg-blue-700" : ""}`}
+          className={`w-full ${plan.popular ? "bg-navyblue-500 hover:bg-navyblue-600" : ""}`}
         >
           {plan.cta}
         </Button>

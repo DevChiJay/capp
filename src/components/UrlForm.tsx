@@ -190,7 +190,7 @@ export function UrlForm() {
                 )}
               </>
             ) : (
-              <Link href="/login" className="mt-2 flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+              <Link href="/login" className="mt-2 flex items-center text-sm font-medium text-navyblue-500 hover:text-navyblue-700">
                 <LogIn className="mr-1 h-4 w-4" />
                 Login for advanced options
               </Link>

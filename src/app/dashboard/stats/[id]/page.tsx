@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts"
 
 export default function StatsPage() {
   const params = useParams()
@@ -16,6 +17,33 @@ export default function StatsPage() {
   const id = params.id as string
   const { data: stats, isLoading, isError } = useLinkStats(id)
   const [activeTab, setActiveTab] = useState("day")
+
+  // Filter data based on selected period
+  const getFilteredData = () => {
+    if (!stats?.clicksByDay) return [];
+    
+    const now = new Date();
+    const filterDate = new Date();
+    
+    switch (activeTab) {
+      case 'day':
+        filterDate.setDate(now.getDate() - 1);
+        break;
+      case 'week':
+        filterDate.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        filterDate.setMonth(now.getMonth() - 1);
+        break;
+      case 'all':
+      default:
+        return stats.clicksByDay;
+    }
+    
+    return stats.clicksByDay.filter(item => new Date(item.date) >= filterDate);
+  };
+
+  const filteredData = stats ? getFilteredData() : [];
 
   if (isLoading) {
     return (
@@ -101,12 +129,26 @@ export default function StatsPage() {
             </div>
 
             <div className="h-64 w-full">
-              {/* This would be a chart component in a real implementation */}
-              <div className="flex h-full items-center justify-center rounded-md bg-gray-100">
-                <p className="text-gray-500">
-                  Chart visualization would go here, showing clicks over time for the selected period ({activeTab})
-                </p>
-              </div>
+              {filteredData && filteredData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={filteredData}>
+                    <XAxis 
+                      dataKey="date" 
+                      tickFormatter={(date) => {
+                        const d = new Date(date);
+                        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                      }}
+                    />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="clicks" fill="#6366f1" />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center rounded-md bg-gray-100">
+                  <p className="text-gray-500">No click data available for this period</p>
+                </div>
+              )}
             </div>
 
             <div className="mt-8 grid gap-8 md:grid-cols-2">

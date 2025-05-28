@@ -3,18 +3,31 @@
 import { useState } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
-import { Copy, BarChart, Pencil, Trash2, QrCode } from "lucide-react"
-import { useLinks, useDeleteLink } from "@/hooks/use-links"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Copy, BarChart, Pencil, Trash2, QrCode, CalendarIcon } from "lucide-react"
+import { useLinks, useDeleteLink, useUpdateLink } from "@/hooks/use-links"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +43,12 @@ import { toast } from "@/components/ui/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { ShortLink } from "@/lib/types"
 
+const editLinkSchema = z.object({
+  customSlug: z.string().optional(),
+  expiresAt: z.date().optional().nullable(),
+  description: z.string().optional(),
+});
+
 const url = process.env.NEXT_PUBLIC_BASE_URL
 
 export function LinksTable() {
@@ -37,9 +56,20 @@ export function LinksTable() {
   const [selectedLink, setSelectedLink] = useState<ShortLink | null>(null)
   const [qrDialogOpen, setQrDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   const { data, isLoading, isError } = useLinks(page)
   const deleteLink = useDeleteLink()
+  const updateLink = useUpdateLink()
+
+  const form = useForm<z.infer<typeof editLinkSchema>>({
+    resolver: zodResolver(editLinkSchema),
+    defaultValues: {
+      customSlug: "",
+      expiresAt: null,
+      description: "",
+    },
+  });
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -48,9 +78,35 @@ export function LinksTable() {
     })
   }
 
-  const handleDelete = async (id: string) => {
+  const handleEdit = async (values: z.infer<typeof editLinkSchema>) => {
+    if (!selectedLink) return;
+    
     try {
-      await deleteLink.mutateAsync(id)
+      await updateLink.mutateAsync({
+        shortCode: selectedLink.shortCode,
+        data: {
+          customSlug: values.customSlug || undefined,
+          expiresAt: values.expiresAt ? values.expiresAt.toISOString() : undefined,
+          description: values.description || undefined,
+        },
+      });
+
+      toast({
+        description: "Link updated successfully",
+      });
+      setEditDialogOpen(false);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update link",
+      });
+    }
+  };
+
+  const handleDelete = async (shortCode: string) => {
+    try {
+      await deleteLink.mutateAsync(shortCode)
       toast({
         description: "Link deleted successfully",
       })
@@ -106,7 +162,7 @@ export function LinksTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.data.map((link) => (
+            {data.data.map((link: ShortLink) => (
               <TableRow key={link.shortCode}>
                 <TableCell className="max-w-[200px] truncate font-medium" title={link.originalUrl}>
                   {link.originalUrl}
@@ -132,7 +188,7 @@ export function LinksTable() {
                 <TableCell className="text-right">
                   <div className="flex justify-end space-x-1">
                     <Button variant="ghost" size="icon" asChild>
-                      <Link href={`/dashboard/stats/${link.id}`}>
+                      <Link href={`/dashboard/stats/${link.shortCode}`}>
                         <BarChart className="h-4 w-4" />
                         <span className="sr-only">Stats</span>
                       </Link>
@@ -202,12 +258,110 @@ export function LinksTable() {
                         )}
                       </DialogContent>
                     </Dialog>
-                    <Button variant="ghost" size="icon" asChild>
-                      <Link href={`/dashboard/edit/${link.id}`}>
-                        <Pencil className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
-                      </Link>
-                    </Button>
+                    <Dialog
+                      open={editDialogOpen && selectedLink?.id === link.id}
+                      onOpenChange={(open) => {
+                        setEditDialogOpen(open);
+                        if (open && link) {
+                          setSelectedLink(link);
+                          form.reset({
+                            customSlug: link.customSlug || "",
+                            expiresAt: link.expiresAt ? new Date(link.expiresAt) : null,
+                            description: link.description || "",
+                          });
+                        }
+                        if (!open) setSelectedLink(null);
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedLink(link);
+                            setEditDialogOpen(true);
+                          }}
+                        >
+                          <Pencil className="h-4 w-4" />
+                          <span className="sr-only">Edit</span>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Edit Link</DialogTitle>
+                          <DialogDescription>
+                            Make changes to your shortened URL here.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <Form {...form}>
+                          <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="customSlug"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Custom Slug (optional)</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="e.g., my-custom-link" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name="expiresAt"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel>Expiry Date (optional)</FormLabel>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                                          <CalendarIcon className="mr-2 h-4 w-4" />
+                                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                      <Calendar
+                                        mode="single"
+                                        selected={field.value || undefined}
+                                        onSelect={field.onChange}
+                                        initialFocus
+                                        disabled={(date) => date < new Date()}
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Description (optional)</FormLabel>
+                                  <FormControl>
+                                    <Textarea placeholder="Add a description for this link" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <DialogFooter>
+                              <Button type="submit" disabled={updateLink.isPending}>
+                                {updateLink.isPending ? "Saving..." : "Save Changes"}
+                              </Button>
+                            </DialogFooter>
+                          </form>
+                        </Form>
+                      </DialogContent>
+                    </Dialog>
                     <AlertDialog
                       open={deleteDialogOpen && selectedLink?.id === link.id}
                       onOpenChange={(open) => {
@@ -238,8 +392,9 @@ export function LinksTable() {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => selectedLink && handleDelete(selectedLink.id)}
+                            onClick={() => selectedLink && handleDelete(selectedLink.shortCode)}
                             className="bg-red-600 hover:bg-red-700"
+                            disabled={deleteLink.isPending}
                           >
                             {deleteLink.isPending ? "Deleting..." : "Delete"}
                           </AlertDialogAction>

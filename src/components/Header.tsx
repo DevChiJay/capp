@@ -30,6 +30,11 @@ export function Header() {
         </div>
 
         <div className="hidden items-center md:flex">
+          <nav className="mx-6 flex items-center space-x-6">
+            <Link href="/pricing" className="text-sm font-medium hover:text-blue-600">
+              Pricing
+            </Link>
+          </nav>
           <Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="mx-4">
             <Github className="h-6 w-6" />
             <span className="sr-only">GitHub</span>

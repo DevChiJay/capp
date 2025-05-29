@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import type { User, LoginCredentials, SignupCredentials, ApiResponse, AuthTokens } from "./types"
 import apiClient from "./api-client"
@@ -17,9 +17,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter()
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <InnerAuthProvider router={router}>{children}</InnerAuthProvider>
+    </Suspense>
+  )
+}
+
+function InnerAuthProvider({ children, router }: { children: ReactNode; router: ReturnType<typeof useRouter> }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Check for existing auth on mount
@@ -95,7 +104,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/login")
   }
 
-  return <AuthContext.Provider value={{ user, isLoading, login, signup, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, isLoading, login, signup, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

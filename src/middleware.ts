@@ -59,7 +59,8 @@ export async function middleware(request: NextRequest) {
   
   try {
     // Check if shortCode exists in your backend
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${shortCode}`, {
+    console.log(`Checking shortCode: ${shortCode}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/url/${shortCode}`, {
       redirect: 'manual',
     });
     

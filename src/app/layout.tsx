@@ -17,7 +17,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Capp URL Shortener",
-  description: "A modern URL shortener with QR code generation and analytics",
+  description: "Shorten URLs, generate QR codes, and unlock detailed insights with capp—the all-in-one solution for smarter link sharing.",
 }
 
 export default function RootLayout({

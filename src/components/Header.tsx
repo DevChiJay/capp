@@ -33,8 +33,11 @@ export function Header() {
             <Link href="/pricing" className="text-sm font-medium hover:text-navyblue-500">
               Pricing
             </Link>
+            <Link href="/#contact" className="text-sm font-medium hover:text-navyblue-500">
+              Contact
+            </Link>
           </nav>
-          <Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="mx-4">
+          <Link href="https://github.com/DevChiJay/capp" target="_blank" rel="noopener noreferrer" className="mx-4">
             <Github className="h-6 w-6" />
             <span className="sr-only">GitHub</span>
           </Link>

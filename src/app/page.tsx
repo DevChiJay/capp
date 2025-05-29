@@ -1,152 +1,21 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
-import { UrlForm } from "@/components/UrlForm"
-import { BarChart, Link2, Globe, QrCode, ArrowRight } from "lucide-react"
+import { HeroSection } from "@/components/sections/HeroSection"
+import { DashboardPreviewSection } from "@/components/sections/DashboardPreviewSection"
+import { MobileAppSection } from "@/components/sections/MobileAppSection"
+import { CTASection } from "@/components/sections/CTASection"
+import { ContactSection } from "@/components/sections/ContactSection"
 
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-navyblue-50 via-white to-gray-50 py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-4xl text-center">
-              <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-navyblue-500 to-indigo-600">
-                Transform Into Short Power
-              </h1>
-              <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600">
-                Instantly capp.to short, memorable links
-              </p>
-
-              <div className="mx-auto max-w-3xl rounded-xl border border-navyblue-100 bg-white p-8 shadow-lg">
-                <UrlForm />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Dashboard Preview Section */}
-        <section className="bg-gray-50 py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="grid items-center gap-8 md:grid-cols-2">
-              <div>
-                <h2 className="mb-4 font-heading text-3xl font-bold md:text-4xl">Powerful analytics at your fingertips</h2>
-                <p className="mb-6 text-lg text-gray-600">
-                  Everything you need to manage, track, and optimize your shortened URLs.
-                </p>
-                <ul className="mb-8 space-y-4">
-                  <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-navyblue-100 p-2 text-navyblue-500">
-                      <Link2 className="h-4 w-4" />
-                    </div>
-                    <span className="mt-1">Create, edit, and organize your links</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-indigo-100 p-2 text-indigo-600">
-                      <Globe className="h-4 w-4" />
-                    </div>
-                    <span className="mt-1">Use your own branded domain</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="mr-3 mt-1 rounded-full bg-purple-100 p-2 text-purple-600">
-                      <BarChart className="h-4 w-4" />
-                    </div>
-                    <span className="mt-1">Track clicks and browser referrers</span>
-                  </li>
-                </ul>
-                <Button asChild size="lg">
-                  <Link href="/signup">
-                    Get started <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-              <div className="rounded-lg shadow-lg">
-                <Image
-                  src="/images/dashboard-preview.png"
-                  alt="Analytics Dashboard"
-                  width={600}
-                  height={400}
-                  className="rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Mobile App Section */}
-        <section className="py-16 md:py-24">
-          <div className="container mx-auto px-4">
-            <div className="grid items-center gap-8 md:grid-cols-2">
-              <div className="flex justify-center">
-                <div className="relative h-[500px] w-[250px] rounded-3xl border-8 border-gray-800 bg-gray-800 shadow-xl">
-                  <div className="absolute inset-x-0 top-0 z-10 h-6 rounded-t-xl bg-gray-800"></div>
-                  <div className="absolute inset-0 overflow-hidden rounded-xl">
-                    <Image
-                      src="/placeholder.svg?height=500&width=250"
-                      alt="Mobile App"
-                      width={250}
-                      height={500}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h2 className="mb-4 font-heading text-3xl font-bold md:text-4xl">Shorten URLs on the go</h2>
-                <p className="mb-6 text-lg text-gray-600">
-                  Download our mobile app to create and manage shortened links from anywhere. Track analytics and
-                  generate QR codes directly from your phone.
-                </p>
-                <div className="mb-8 flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                  <Button variant="outline" size="lg" className="flex items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 border-none">
-                    <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.9 19.9l-5.4-5.4 5.4-5.4c.39-.39.39-1.02 0-1.41s-1.02-.39-1.41 0l-5.4 5.4-5.4-5.4c-.39-.39-1.02-.39-1.41 0s-.39 1.02 0 1.41l5.4 5.4-5.4 5.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l5.4-5.4 5.4 5.4c.39.39 1.02.39 1.41 0 .38-.39.39-1.03 0-1.42z" />
-                    </svg>
-                    Download for Android
-                  </Button>
-                  <div className="flex items-center justify-center rounded-lg border border-blue-100 p-4 shadow-md">
-                    <QrCode className="h-24 w-24 text-blue-600" />
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600">
-                  Scan the QR code or click the button to download our mobile app.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="bg-gradient-to-r from-navyblue-500 to-indigo-700 py-16 text-white md:py-24 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
-            </svg>
-          </div>
-          <div className="container mx-auto px-4 text-center relative z-10">
-            <h2 className="mb-4 text-3xl font-heading font-bold md:text-4xl">Ready to get started?</h2>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-blue-100">
-              Join thousands of users who trust our platform for their link shortening needs.
-            </p>
-            <div className="flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-              <Button size="lg" variant="secondary" asChild className="font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
-                <Link href="/signup">Create Free Account</Link>
-              </Button>
-              <Button size="lg" variant="outline" className="bg-transparent text-white hover:bg-blue-700 border-2 font-semibold transition-all duration-200" asChild>
-                <Link href="/pricing">View Pricing</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <HeroSection />
+        <DashboardPreviewSection />
+        <MobileAppSection />
+        <CTASection />
+        <ContactSection />
       </main>
       <Footer />
     </div>

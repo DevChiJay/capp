@@ -66,7 +66,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
         toast({
           variant: "destructive",
           title: "Signup failed",
-          description: "An error occurred during signup",
+          description: "Check your email and password and try again",
         })
       }
     } catch (error) {

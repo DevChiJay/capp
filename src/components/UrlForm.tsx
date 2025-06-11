@@ -27,7 +27,23 @@ import type { UrlFormData, ShortLink } from "@/lib/types"
 const url = process.env.NEXT_PUBLIC_BASE_URL
 
 const urlSchema = z.object({
-  originalUrl: z.string().url({ message: "Please enter a valid URL" }),
+  originalUrl: z
+    .string()
+    .url({ message: "Please enter a valid URL" })
+    .refine(
+      (val) => {
+        // Check if the URL is not the same as the app's base URL
+        if (!url) return true; // Skip check if base URL is not defined
+        try {
+          const inputUrl = new URL(val);
+          const baseUrl = new URL(url);
+          return inputUrl.hostname !== baseUrl.hostname;
+        } catch {
+          return true; // If URL parsing fails, leave it to the url() validator
+        }
+      },
+      { message: "Can't shorten capp/self URL" }
+    ),
   customSlug: z.string().optional(),
   expirationDays: z.number().int().min(1).default(7),
   description: z.string().optional(),
@@ -49,9 +65,27 @@ export function UrlForm() {
       description: "",
     },
   })
-
   const onSubmit = async (data: z.infer<typeof urlSchema>) => {
     try {
+      // Double-check that we're not shortening our own URL
+      if (url) {
+        try {
+          const inputUrl = new URL(data.originalUrl);
+          const baseUrl = new URL(url);
+          
+          if (inputUrl.hostname === baseUrl.hostname) {
+            toast({
+              title: "Warning",
+              description: "Can't shorten capp/self URL",
+              variant: "destructive",
+            });
+            return;
+          }
+        } catch (e) {
+          // URL parsing failed, continue with submission
+        }
+      }
+      
       const formData: UrlFormData = {
         originalUrl: data.originalUrl,
       }
